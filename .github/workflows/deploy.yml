@@ -22,7 +22,7 @@ jobs:
 
       - name: Wait before retry
         if: steps.deploy1.outcome == 'failure'
-        run: sleep 30
+        run: sleep 60
 
       - name: Deploy via cPanel (attempt 2)
         id: deploy2
@@ -39,11 +39,12 @@ jobs:
 
       - name: Wait before retry
         if: steps.deploy1.outcome == 'failure' && steps.deploy2.outcome == 'failure'
-        run: sleep 60
+        run: sleep 120
 
       - name: Deploy via cPanel (attempt 3 - final)
         id: deploy3
         if: steps.deploy1.outcome == 'failure' && steps.deploy2.outcome == 'failure'
+        continue-on-error: true
         uses: pinkasey/cpanel-deploy-action@v1.2.5
         with:
           hostname: https://p3plzcpnl508180.prod.phx3.secureserver.net
@@ -54,6 +55,13 @@ jobs:
           branch: main
 
       - name: Purge Sucuri firewall cache
+        if: always()
         continue-on-error: true
         run: |
           curl -skL "https://waf.sucuri.net/api?v2&k=${{ secrets.SUCURI_API_KEY }}&s=${{ secrets.SUCURI_API_SECRET }}&a=clear_cache"
+
+      - name: Fail the job if every deploy attempt failed
+        if: steps.deploy1.outcome == 'failure' && steps.deploy2.outcome == 'failure' && steps.deploy3.outcome == 'failure'
+        run: |
+          echo "All three cPanel deploy attempts failed - see earlier step logs for details."
+          exit 1
