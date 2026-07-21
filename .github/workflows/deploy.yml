@@ -8,7 +8,42 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Pull latest commit and deploy via cPanel Git Version Control
+      - name: Deploy via cPanel (attempt 1)
+        id: deploy1
+        continue-on-error: true
+        uses: pinkasey/cpanel-deploy-action@v1.2.5
+        with:
+          hostname: https://p3plzcpnl508180.prod.phx3.secureserver.net
+          cpanel_username: ${{ secrets.CPANEL_USERNAME }}
+          cpanel_token: ${{ secrets.CPANEL_API_TOKEN }}
+          repository_root: /home/dz77qxrgv7cy/repositories/zsquared-website
+          updateRepository: true
+          branch: main
+
+      - name: Wait before retry
+        if: steps.deploy1.outcome == 'failure'
+        run: sleep 30
+
+      - name: Deploy via cPanel (attempt 2)
+        id: deploy2
+        if: steps.deploy1.outcome == 'failure'
+        continue-on-error: true
+        uses: pinkasey/cpanel-deploy-action@v1.2.5
+        with:
+          hostname: https://p3plzcpnl508180.prod.phx3.secureserver.net
+          cpanel_username: ${{ secrets.CPANEL_USERNAME }}
+          cpanel_token: ${{ secrets.CPANEL_API_TOKEN }}
+          repository_root: /home/dz77qxrgv7cy/repositories/zsquared-website
+          updateRepository: true
+          branch: main
+
+      - name: Wait before retry
+        if: steps.deploy1.outcome == 'failure' && steps.deploy2.outcome == 'failure'
+        run: sleep 60
+
+      - name: Deploy via cPanel (attempt 3 - final)
+        id: deploy3
+        if: steps.deploy1.outcome == 'failure' && steps.deploy2.outcome == 'failure'
         uses: pinkasey/cpanel-deploy-action@v1.2.5
         with:
           hostname: https://p3plzcpnl508180.prod.phx3.secureserver.net
@@ -19,5 +54,6 @@ jobs:
           branch: main
 
       - name: Purge Sucuri firewall cache
+        continue-on-error: true
         run: |
           curl -skL "https://waf.sucuri.net/api?v2&k=${{ secrets.SUCURI_API_KEY }}&s=${{ secrets.SUCURI_API_SECRET }}&a=clear_cache"
