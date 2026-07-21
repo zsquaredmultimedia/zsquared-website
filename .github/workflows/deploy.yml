@@ -1,0 +1,19 @@
+name: Deploy to cPanel
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull latest commit and deploy via cPanel Git Version Control
+        uses: pinkasey/cpanel-deploy-action@v1.2.5
+        with:
+          hostname: https://p3plzcpnl508180.prod.phx3.secureserver.net
+          cpanel_username: ${{ secrets.CPANEL_USERNAME }}
+          cpanel_token: ${{ secrets.CPANEL_API_TOKEN }}
+          repository_root: /home/dz77qxrgv7cy/repositories/zsquared-website
+          updateRepository: true
+          branch: main
