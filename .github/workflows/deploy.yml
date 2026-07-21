@@ -17,3 +17,7 @@ jobs:
           repository_root: /home/dz77qxrgv7cy/repositories/zsquared-website
           updateRepository: true
           branch: main
+
+      - name: Purge Sucuri firewall cache
+        run: |
+          curl -skL "https://waf.sucuri.net/api?v2&k=${{ secrets.SUCURI_API_KEY }}&s=${{ secrets.SUCURI_API_SECRET }}&a=clear_cache"
