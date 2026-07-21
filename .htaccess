@@ -1,0 +1,4 @@
+# Redirect non-www to www (301 permanent)
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^zsquaredproductions\.com$ [NC]
+RewriteRule ^ https://www.zsquaredproductions.com%{REQUEST_URI} [R=301,L]

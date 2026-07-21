@@ -1,0 +1,17 @@
+# macOS cruft
+._*
+.DS_Store
+
+# Stale/backup archives — not part of the deployed site
+site.zip
+deploy-update.zip
+
+# Orphaned assets — unreferenced by any page, kept on disk but not deployed
+assets/videos/homepage-hero.mp4
+assets/photos/hero-sofi.jpeg
+assets/photos/IMG_0301.jpeg
+assets/photos/IMG_2068.jpeg
+assets/photos/IMG_2878.jpeg
+assets/photos/IMG_5195.jpeg
+assets/photos/IMG_5546.jpeg
+assets/photos/IMG_5788.jpeg

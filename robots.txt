@@ -1,0 +1,8 @@
+# Z Squared Multimedia Productions
+# https://www.zsquaredproductions.com
+
+User-agent: *
+Allow: /
+Disallow: /mockups/
+
+Sitemap: https://www.zsquaredproductions.com/sitemap.xml
